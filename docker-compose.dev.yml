@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  dev:
+    environment:
+      - NODE_ENV=development
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    volumes:
+      - .:/home/node/app
+    command: ["npm", "run", "dev"]

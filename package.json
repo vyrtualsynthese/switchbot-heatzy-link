@@ -1,0 +1,37 @@
+{
+  "name": "nodejs-docker-typescript-boilerplate",
+  "version": "0.0.1",
+  "description": "Simple overview of use/purpose.",
+  "author": "Valentin RONTEIX",
+  "license": "WTFPL",
+  "scripts": {
+    "build": "tsc",
+    "prod": "node ./dist/index.js",
+    "dev": "ts-node-dev --respawn --inspect=0.0.0.0 -- src/index.ts",
+    "lint": "eslint . --ext .ts && npx prettier --write .",
+    "docker:init": "DOCKER_BUILDKIT=1 docker build --target dev -t dev:latest . && docker run -it -v $PWD:/home/node/app dev npm i",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
+    "docker:dev:logs": "docker-compose -f docker-compose.dev.yml logs -f",
+    "docker:dev:down": "docker-compose -f docker-compose.dev.yml down",
+    "docker:prod": "docker-compose up -d",
+    "docker:prod:down": "docker-compose up -d"
+  },
+  "devDependencies": {
+    "@types/node": "^15.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.22.1",
+    "@typescript-eslint/parser": "^4.22.1",
+    "eslint": "^7.26.0",
+    "lint-staged": "^11.0.0",
+    "prettier": "2.3.0",
+    "ts-node": "^9.1.1",
+    "ts-node-dev": "^1.1.6",
+    "typescript": "^4.2.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vyrtualsynthese/nodejs-docker-typescript-boilerplate.git"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
+}

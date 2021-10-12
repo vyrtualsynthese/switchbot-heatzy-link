@@ -1,0 +1,12 @@
+# Ignore artifacts:
+build
+.husky
+**/package.json
+**/coverage
+package-lock.json
+.nyc_output/
+out/
+dist/
+node_modules
+.git
+*.md
