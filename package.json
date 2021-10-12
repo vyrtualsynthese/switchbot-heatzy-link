@@ -1,7 +1,7 @@
 {
-  "name": "nodejs-docker-typescript-boilerplate",
+  "name": "switchbot-heatzy-link",
   "version": "0.0.1",
-  "description": "Simple overview of use/purpose.",
+  "description": "",
   "author": "Valentin RONTEIX",
   "license": "WTFPL",
   "scripts": {
@@ -16,6 +16,10 @@
     "docker:prod": "docker-compose up -d",
     "docker:prod:down": "docker-compose up -d"
   },
+  "dependencies": {
+    "axios": "^0.23.0",
+    "dotenv": "^10.0.0"
+  },
   "devDependencies": {
     "@types/node": "^15.0.1",
     "@typescript-eslint/eslint-plugin": "^4.22.1",
@@ -29,7 +33,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vyrtualsynthese/nodejs-docker-typescript-boilerplate.git"
+    "url": "git+https://github.com/vyrtualsynthese/switchbot-heatzy-link.git"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
