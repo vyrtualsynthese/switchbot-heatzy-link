@@ -27,16 +27,29 @@ const switchbotSalonConfig = {
 }
 
 function findBetweenTime () {
-  console.log(currentTime.isoWeekday())
-  console.log(currentTime.hour())
+  console.log(`Current Weekday ${currentTime.isoWeekday()}`)
+  console.log(`Current Hour ${currentTime.hour()}`)
   let weekSelector = ""
   if (currentTime.isoWeekday() <= 5) {
     weekSelector = "weekday"
   } else {
     weekSelector = "weekend"
   }
+  let currentTemp = 0
+  console.log(`Selected weekday ${weekSelector}`);
+    // @ts-ignore
+    console.log(`Selected temps and time \n ${JSON.stringify(switchbotSalonConfig[weekSelector],null, ' ')}`);
+    // @ts-ignore
+    const times = Object.keys(switchbotSalonConfig[weekSelector])
+    times.sort()
+    times.forEach((time, index) => {
+      if (Number(time) <= currentTime.hour()) {
+        // @ts-ignore
+        currentTemp = switchbotSalonConfig[weekSelector][time]
+      }
+    })
+    return currentTemp
 
-  // WIP: Finish function to match temperature with time and moment of the week
 }
 
 axios
@@ -106,8 +119,39 @@ axios
   })
   // Look for configured temperature
   .then(function (response: any){
-    findBetweenTime()
+    const targetTemp = findBetweenTime()
+    console.log(`Current Temperature ${response.data.body.temperature}`)
+    console.log(`Target Temperature ${targetTemp}`)
 
+    if (response.data.body.temperature >= targetTemp ) {
+      console.log(`Stop heater`)
+    axios
+      .post(
+        `${heatzyURL}/app/control/${heatzyDevice}`,
+      {
+          "attrs": {
+            "mode":3
+          }
+        },
+        {
+          headers: HeatzyHeader
+        }
+      )
+    } else if (response.data.body.temperature < targetTemp) {
+      console.log(`Stop heater`)
+      axios
+        .post(
+          `${heatzyURL}/app/control/${heatzyDevice}`,
+          {
+            "attrs": {
+              "mode":0
+            }
+          },
+          {
+            headers: HeatzyHeader
+          }
+          )
+    }
 
   })
   .catch(function (error: any) {
