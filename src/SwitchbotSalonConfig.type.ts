@@ -1,11 +1,10 @@
 export type SwitchbotSalonConfig = {
-  [key: string]: Schedule,
+  "room": string,
   "weekday": Schedule,
   "weekend": Schedule,
 };
 
 type Schedule = {
-  [key: string]: number | undefined
   "00"?: number,
   "01"?: number,
   "02"?: number,

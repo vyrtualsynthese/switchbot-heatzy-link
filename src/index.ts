@@ -1,6 +1,7 @@
 import { config } from "dotenv";
 import axios, { AxiosResponse } from "axios";
 import moment from "moment-timezone";
+import * as _ from "lodash";
 import { SwitchbotSalonConfig } from "./SwitchbotSalonConfig.type";
 config();
 moment.tz.setDefault(process.env.TIMEZONE);
@@ -13,18 +14,60 @@ const switchbotDevice = 'EC759E8DEF20'
 
 const switchbotKey = process.env.SWITCHBOT_KEY
 
-const switchbotSalonConfig: SwitchbotSalonConfig = {
-  "weekday": {
-    "00": 17,
-    "09": 21,
-    "23": 21,
+const switchbotSalonConfig: SwitchbotSalonConfig[] = [
+  {
+    "room": "salon",
+    "weekday": {
+      "00": 17,
+      "09": 21,
+      "23": 21,
+    },
+    "weekend": {
+      "00": 17,
+      "08": 21,
+      "23": 21,
+    },
   },
-  "weekend": {
-    "00": 17,
-    "08": 21,
-    "23": 21,
+  {
+    "room": "cuisine",
+    "weekday": {
+      "00": 17,
+      "09": 21,
+      "23": 21,
+    },
+    "weekend": {
+      "00": 17,
+      "08": 21,
+      "23": 21,
+    },
   },
-}
+  {
+    "room": "salle de bain",
+    "weekday": {
+      "00": 17,
+      "09": 21,
+      "23": 21,
+    },
+    "weekend": {
+      "00": 17,
+      "08": 21,
+      "23": 21,
+    },
+  },
+  {
+    "room": "chambre",
+    "weekday": {
+      "00": 17,
+      "09": 21,
+      "23": 21,
+    },
+    "weekend": {
+      "00": 17,
+      "08": 21,
+      "23": 21,
+    },
+  }
+  ]
 
 console.log(typeof switchbotSalonConfig)
 
@@ -40,15 +83,21 @@ function findBetweenTime () {
   }
   let currentTemp
   console.log(`Selected weekday ${weekSelector}`);
-    console.log(`Selected temps and time \n ${JSON.stringify(switchbotSalonConfig[weekSelector] ,null, ' ')}`);
 
-    const times = Object.keys(switchbotSalonConfig[weekSelector])
+  const selectedRoom = _.find(switchbotSalonConfig, {"room": "salon"})
+
+  const selectedRoomConfig = _.get(selectedRoom, weekSelector)
+
+  console.log(`Selected temps and time \n ${JSON.stringify(selectedRoomConfig ,null, ' ')}`);
+
+    const times = Object.keys(selectedRoomConfig)
     times.sort()
     times.forEach((time, index) => {
       if (Number(time) <= currentTime.hour()) {
-        currentTemp = switchbotSalonConfig[weekSelector][time]
+        currentTemp = _.get(selectedRoomConfig, time)
       }
     })
+
     return currentTemp
 
 }
@@ -159,11 +208,11 @@ function main () {
           )
       }
     }).then(function() {
-    setTimeout(main, 100);
+    setTimeout(main, 600000);
   })
     .catch(function(error: Error) {
       console.log(error);
-      setTimeout(main, 100);
+      setTimeout(main, 600000);
     });
 }
 
