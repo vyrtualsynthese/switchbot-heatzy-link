@@ -2,13 +2,11 @@ import { config } from "dotenv";
 import axios, { AxiosResponse } from "axios";
 import moment from "moment-timezone";
 import * as _ from "lodash";
+import {Heatzy} from "./heatzy/Heatzy";
 import { SwitchbotSalonConfig } from "./SwitchbotSalonConfig.type";
 config();
 moment.tz.setDefault(process.env.TIMEZONE);
 
-const heatzyDevice = "OkmPW3ZesMbgBkA9KHNOGc";
-const heatzyURL = "https://euapi.gizwits.com"
-let HeatzyHeader = {}
 const switchbotUrl = 'https://api.switch-bot.com'
 const switchbotDevice = 'EC759E8DEF20'
 
@@ -69,8 +67,6 @@ const switchbotSalonConfig: SwitchbotSalonConfig[] = [
   }
   ]
 
-console.log(typeof switchbotSalonConfig)
-
 function findBetweenTime () {
   const currentTime = moment()
   console.log(`Current Weekday ${currentTime.isoWeekday()}`)
@@ -102,58 +98,21 @@ function findBetweenTime () {
 
 }
 
+const heatzyURL = "https://euapi.gizwits.com"
+const heatzyDevice = "OkmPW3ZesMbgBkA9KHNOGc";
+
+const heatzy = new Heatzy()
+
 function main () {
-  axios
-    // POST: Get Heatzy API Token
-    .post(
-      `${heatzyURL}/app/login`,
-      {
-        username: process.env.HEATZY_USERNAME,
-        password: process.env.HEATZY_PASSWORD,
-      },
-      {
-        headers: {
-          "X-Gizwits-Application-Id": "c70a66ff039d41b4a220e198b0fcc8b3",
-        },
-      }
-    )
-    // GET: Get Heatzy Device infos
-    .then(function(response: any) {
-      console.log(response.data.token);
-
-      HeatzyHeader = {
-        "X-Gizwits-Application-Id": "c70a66ff039d41b4a220e198b0fcc8b3",
-        "X-Gizwits-User-token": response.data.token,
-      }
-
-      return axios.get(
-        `${heatzyURL}/app/devdata/${heatzyDevice}/latest`,
-        {
-          headers: HeatzyHeader,
-        }
-      );
-    })
-    .then(async function(response: any) {
+    heatzy.getDevice()
+      .then(async function(response: any) {
       // If Heatzy Vacancy mode activated stop
       if (Number(response.data.attr.derog_mode) === 1) {
         throw new Error("vacancy mode activated");
       }
       // If Heatzy Planning mode activated disable it
       if (Number(response.data.attr.timer_switch) === 1) {
-        console.log("heatzy disable planning mode");
-        await axios
-          // POST: Disable Planning Mode
-          .post(
-            `${heatzyURL}/app/control/${heatzyDevice}`,
-            {
-              attrs: {
-                timer_switch: 0,
-              },
-            },
-            {
-              headers: HeatzyHeader,
-            }
-          );
+        await heatzy.switchDeviceVacancyMode(false)
       }
       if (!switchbotKey) {
         throw new Error('Switchbot Key is Undefined')
@@ -169,7 +128,7 @@ function main () {
           })
     })
     // Look for configured temperature
-    .then(function(response: AxiosResponse<any>) {
+    .then(async function(response: AxiosResponse<any>) {
       const targetTemp = findBetweenTime()
       console.log(`Current Temperature ${response.data.body.temperature}`)
       console.log(`Target Temperature ${targetTemp}`)
@@ -180,32 +139,10 @@ function main () {
 
       if (response.data.body.temperature >= targetTemp) {
         console.log(`Stop heater`)
-        return axios
-          .post(
-            `${heatzyURL}/app/control/${heatzyDevice}`,
-            {
-              "attrs": {
-                "mode": 3
-              }
-            },
-            {
-              headers: HeatzyHeader
-            }
-          )
+        return heatzy.switchDeviceHeatMode(3)
       } else if (response.data.body.temperature < targetTemp) {
         console.log(`Start heater`)
-        return axios
-          .post(
-            `${heatzyURL}/app/control/${heatzyDevice}`,
-            {
-              "attrs": {
-                "mode": 0
-              }
-            },
-            {
-              headers: HeatzyHeader
-            }
-          )
+        return await heatzy.switchDeviceHeatMode(0)
       }
     }).then(function() {
     setTimeout(main, 600000);
