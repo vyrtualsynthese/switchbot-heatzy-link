@@ -1,28 +1,18 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
-const heatzyDevice = "OkmPW3ZesMbgBkA9KHNOGc";
-const heatzyURL = "https://euapi.gizwits.com"
+const heatzyURL = "https://euapi.gizwits.com";
 
 export class Heatzy {
-  heatzyURL: string
-  heatzyHeader: any
+  heatzyURL: string;
+  heatzyHeader: any;
 
   constructor() {
     this.heatzyURL = "https://euapi.gizwits.com";
-    this.heatzyHeader = {}
+    this.heatzyHeader = {};
   }
 
-  async init(): Promise<any> {
-    await this.refreshToken()
-
-    return new Promise((resolve: any) => {
-        resolve("resolved");
-      }
-    );
-  }
-
-  async getDevice(): Promise<any> {
-    await this.refreshToken()
+  async getPilote(heatzyDevice: string): Promise<any> {
+    await this.refreshToken();
     const res = await axios.get(
       `${this.heatzyURL}/app/devdata/${heatzyDevice}/latest`,
       {
@@ -30,13 +20,15 @@ export class Heatzy {
       }
     )
     return new Promise((resolve: any) => {
-        resolve(res);
-      }
-    );
+      resolve(res.data);
+    });
   }
 
-  async switchDeviceVacancyMode(mode: boolean): Promise<void> {
-    await this.refreshToken()
+  async switchDeviceVacancyMode(
+    heatzyDevice: string,
+    mode: boolean
+  ): Promise<void> {
+    await this.refreshToken();
     await axios.post(
       `${this.heatzyURL}/app/control/${heatzyDevice}`,
       {
@@ -46,36 +38,39 @@ export class Heatzy {
       },
       {
         headers: this.heatzyHeader,
-      })
-    return new Promise((resolve: any) => {
-        resolve();
       }
     );
+    return new Promise((resolve: any) => {
+      resolve();
+    });
   }
 
-  async switchDeviceHeatMode(mode: number): Promise<void> {
-    await this.refreshToken()
+  async switchDeviceHeatMode(
+    heatzyDevice: string,
+    mode: number
+  ): Promise<void> {
+    await this.refreshToken();
     await axios.post(
       `${this.heatzyURL}/app/control/${heatzyDevice}`,
       {
         attrs: {
-          "mode": mode,
+          mode: mode,
         },
       },
       {
         headers: this.heatzyHeader,
-      })
-      return new Promise((resolve: any) => {
-        resolve();
-      });
+      }
+    );
+    return new Promise((resolve: any) => {
+      resolve();
+    });
   }
 
   async getHeader(): Promise<any> {
-    await this.refreshToken()
+    await this.refreshToken();
     return new Promise((resolve: any) => {
-        resolve(this.heatzyHeader);
-      }
-    );
+      resolve(this.heatzyHeader);
+    });
   }
 
   async refreshToken(): Promise<any> {
@@ -83,22 +78,21 @@ export class Heatzy {
       `${heatzyURL}/app/login`,
       {
         username: process.env.HEATZY_USERNAME,
-        password: process.env.HEATZY_PASSWORD
+        password: process.env.HEATZY_PASSWORD,
       },
       {
         headers: {
-          "X-Gizwits-Application-Id": "c70a66ff039d41b4a220e198b0fcc8b3"
-        }
+          "X-Gizwits-Application-Id": "c70a66ff039d41b4a220e198b0fcc8b3",
+        },
       }
-    )
+    );
     this.heatzyHeader = {
       "X-Gizwits-Application-Id": "c70a66ff039d41b4a220e198b0fcc8b3",
-      "X-Gizwits-User-token": res.data.token
+      "X-Gizwits-User-token": res.data.token,
     };
 
     return new Promise((resolve: any) => {
-        resolve("resolved");
-      }
-    );
+      resolve("resolved");
+    });
   }
 }
