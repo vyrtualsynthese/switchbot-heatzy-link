@@ -1,5 +1,5 @@
 ##### 💻 DEV #####
-FROM node:14.16.1-alpine3.13 AS dev
+FROM node:14.18.1-alpine3.13 AS dev
 
 WORKDIR /home/node/app
 ENV NODE_ENV development
@@ -20,7 +20,7 @@ RUN npm run lint &&\
     npm prune --production
 
 ##### 🚀 PRODUCTION #####
-FROM node:14.16.1-alpine3.13 AS prod
+FROM node:14.18.1-alpine3.13 AS prod
 
 WORKDIR /home/node/app
 ENV NODE_ENV production
