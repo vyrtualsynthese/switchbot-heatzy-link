@@ -5,41 +5,15 @@
   "author": "Valentin RONTEIX",
   "license": "WTFPL",
   "scripts": {
-    "build": "tsc",
-    "prod": "node ./dist/index.js",
-    "dev": "ts-node-dev --respawn --inspect=0.0.0.0 -- src/index.ts",
-    "lint": "eslint . --ext .ts --fix && npx prettier --write .",
-    "docker:init": "DOCKER_BUILDKIT=1 docker build --target dev -t shl-dev:latest . && docker run -it -v $PWD:/home/node/app shl-dev npm i",
+    "docker:init": "DOCKER_BUILDKIT=1 docker build --target dev -t shl-dev:latest ./backend && docker run -it -v $PWD/backend:/home/node/app shl-dev npm i",
     "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
     "docker:dev:logs": "docker-compose -f docker-compose.dev.yml logs -f",
     "docker:dev:down": "docker-compose -f docker-compose.dev.yml down",
     "docker:prod": "docker-compose up -d",
     "docker:prod:down": "docker-compose up -d"
   },
-  "dependencies": {
-    "axios": "^0.23.0",
-    "dotenv": "^10.0.0",
-    "lodash": "^4.17.21",
-    "moment": "^2.29.1",
-    "moment-timezone": "^0.5.33"
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.14.175",
-    "@types/node": "^15.0.1",
-    "@typescript-eslint/eslint-plugin": "^4.22.1",
-    "@typescript-eslint/parser": "^4.22.1",
-    "eslint": "^7.26.0",
-    "lint-staged": "^11.0.0",
-    "prettier": "2.3.0",
-    "ts-node": "^9.1.1",
-    "ts-node-dev": "^1.1.6",
-    "typescript": "^4.2.4"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vyrtualsynthese/switchbot-heatzy-link.git"
-  },
-  "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
   }
 }
