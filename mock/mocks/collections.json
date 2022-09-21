@@ -1,0 +1,6 @@
+[
+  {
+    "id": "devices",
+    "routes": ["get-devices:all"]
+  }
+]

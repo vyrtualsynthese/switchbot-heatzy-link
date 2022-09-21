@@ -1,0 +1,14 @@
+{
+  "name": "mock",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "mocks": "mocks-server"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@mocks-server/main": "^4.0.0"
+  }
+}
