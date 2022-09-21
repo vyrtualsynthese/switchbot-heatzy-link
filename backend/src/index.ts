@@ -1,7 +1,6 @@
 import { config } from "dotenv";
 config();
 
-import axios, { AxiosResponse } from "axios";
 import moment from "moment-timezone";
 import * as _ from "lodash";
 import { Heatzy } from "./heatzy/Heatzy";
@@ -107,18 +106,23 @@ function main() {
   const switchbot = new Switchbot()
 
   heatzy
+    // get all available pilotes
+    // Refacto: New function getAllPilotes return object with all info
     .getPilote(heatzyDevice)
     .then(async function (response: any) {
       // If Heatzy Vacancy mode activated stop
+      // Refacto: itterate over each pilotes to check if vacancy mode activated then remove it from object
       if (Number(response.attr.derog_mode) === 1) {
         throw new Error("vacancy mode activated");
       }
       // If Heatzy Planning mode activated disable it
+      // Refacto: Itterate over each left Pilotes to check if planning mode need disable
       if (Number(response.attr.timer_switch) === 1) {
         await heatzy.switchDeviceVacancyMode(heatzyDevice, false);
       }
 
       // Switch bot Get meter temperature
+      // Refacto: Get all devices status
       return switchbot.getSwitchbotDeviceStatus("EC759E8DEF20");
     })
     // Look for configured temperature
@@ -149,3 +153,10 @@ function main() {
 }
 
 main();
+
+// const test = users.map(x => {
+//   return {"test": x.user}
+// });
+//
+// console.log(test)
+// > Array [Object { test: "barney" }, Object { test: "fred" }]
