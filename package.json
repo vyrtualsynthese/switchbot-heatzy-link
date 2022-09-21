@@ -5,7 +5,7 @@
   "author": "Valentin RONTEIX",
   "license": "WTFPL",
   "scripts": {
-    "docker:init": "DOCKER_BUILDKIT=1 docker build --target dev -t shl-dev:latest ./backend && docker run -it -v $PWD/backend:/home/node/app shl-dev npm i",
+    "docker:init": "(DOCKER_BUILDKIT=1 docker build --target dev -t shl-dev:latest ./backend && docker run -it -v $PWD/backend:/home/node/app shl-dev npm i) & (DOCKER_BUILDKIT=1 docker build -t shl-mock:latest ./mock && docker run -it -v $PWD/mock:/home/node/app shl-mock npm i)",
     "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
     "docker:dev:logs": "docker-compose -f docker-compose.dev.yml logs -f",
     "docker:dev:down": "docker-compose -f docker-compose.dev.yml down",

@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   dev:
+    container_name: backend
     environment:
       - NODE_ENV=development
     build:
@@ -13,3 +14,15 @@ services:
     volumes:
       - ./backend:/home/node/app
     command: ["npm", "run", "dev"]
+#  mock:
+#    container_name: mock
+#    environment:
+#      - NODE_ENV=development
+#    build:
+#      context: ./mock
+#      dockerfile: Dockerfile
+#    ports:
+#      - "3100:3100"
+#    volumes:
+#      - ./mock:/home/node/app
+#    command: [ "npm", "run", "mocks" ]
