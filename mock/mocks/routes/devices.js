@@ -5,7 +5,7 @@ const crypto = require('crypto');
 // users data
 const DEVICES = [
   {
-    "id": "crypto.randomUUID()",
+    "id": crypto.randomUUID(),
     "zone": "salon",
     "heaterName": "sdb",
     "captorName": "salon",

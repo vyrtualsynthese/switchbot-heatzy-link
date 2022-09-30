@@ -1,28 +1,28 @@
 version: "3.9"
 services:
-  dev:
-    container_name: backend
+  # dev:
+  #   container_name: backend
+  #   environment:
+  #     - NODE_ENV=development
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #     target: dev
+  #   ports:
+  #     - "5678:5678"
+  #     - "9229:9229"
+  #   volumes:
+  #     - ./backend:/home/node/app
+  #   command: ["npm", "run", "dev"]
+  mock:
+    container_name: mock
     environment:
       - NODE_ENV=development
     build:
-      context: ./backend
+      context: ./mock
       dockerfile: Dockerfile
-      target: dev
     ports:
-      - "5678:5678"
-      - "9229:9229"
+      - "3100:3100"
     volumes:
-      - ./backend:/home/node/app
-    command: ["npm", "run", "dev"]
-#  mock:
-#    container_name: mock
-#    environment:
-#      - NODE_ENV=development
-#    build:
-#      context: ./mock
-#      dockerfile: Dockerfile
-#    ports:
-#      - "3100:3100"
-#    volumes:
-#      - ./mock:/home/node/app
-#    command: [ "npm", "run", "mocks" ]
+      - ./mock:/home/node/app
+    command: [ "npm", "run", "mocks" ]
